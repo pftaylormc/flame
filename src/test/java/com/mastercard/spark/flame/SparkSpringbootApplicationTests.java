@@ -1,4 +1,4 @@
-package com.mastercard.spark;
+package com.mastercard.spark.flame;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

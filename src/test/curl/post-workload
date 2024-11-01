@@ -1,0 +1,22 @@
+#!/bin/sh
+#
+# Usage: post-workload ACTION [DURATION] [CPU-LOAD] [MEMORY-LOAD] 
+#
+
+action=$1
+duration=${2-0}
+cpuload=${3-0}
+memoryload=${4-0}
+
+DATA=`cat << __EOM__
+{
+  "description": "test workload",
+  "action": "${action}",
+  "duration": ${duration},
+  "cpuLoad": ${cpuload},
+  "memoryLoad": ${memoryload}
+}
+__EOM__
+`
+
+./src/test/curl/curl-request POST workloads "${DATA}"

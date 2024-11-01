@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Usage: get-status CODE
+#
+
+./src/test/curl/curl-request GET status/$1
+

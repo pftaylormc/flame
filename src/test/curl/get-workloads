@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Usage: get-workloads
+#
+
+./src/test/curl/curl-request GET workloads
+

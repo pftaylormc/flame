@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Usage: get-workload CODE
+#
+
+./src/test/curl/curl-request GET workloads/$1
+

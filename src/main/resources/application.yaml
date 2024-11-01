@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: flame
+
+
+  endpoint:
+    info:
+      enabled: true
+      git:
+        mode: full
+    shutdown:
+      enabled: false
+    health:
+      show-components: always
+      show-details: always
+      probes:
+        enabled: true
+      livenessState:
+        enabled: true
+      readinessState:
+        enabled: true
+    loggers:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include:
+          - info
+          - health
+          - prometheus
+          - loggers
+          - httptrace

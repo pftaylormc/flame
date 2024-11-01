@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# Usage: curl-request METHOD PATH [DATA]
+#
+
+API_ENDPOINT="http://localhost:8080"
+VERBOSE=--verbose
+VERBOSE=
+
+CURL_METHOD=$1
+CURL_PATH=$2
+CURL_DATA=$3
+CURL_OUTPUT="status: %{http_code}\ntime: %{time_total}"
+
+ENDPOINT="${API_ENDPOINT}/${CURL_PATH}"
+
+CURL_METHOD=`echo $CURL_METHOD | tr a-z A-Z`
+if [ -t 1 ] ; then
+  echo "${CURL_METHOD} ${ENDPOINT}"
+
+  if [ ! -z "${CURL_DATA}" ]; then
+    echo "request:"
+    if echo "${CURL_DATA}" | jq empty > /dev/null  2>&1 ; then
+      echo "${CURL_DATA}" | jq
+    else
+      echo "${CURL_DATA}"
+    fi
+    echo ""
+  fi
+fi
+
+RESPONSE=/tmp/curl-response.$$
+CURL_STATUS=/tmp/curl-status.$$
+trap "rm -f \"${RESPONSE}\" \"${CURL_STATUS}\"" EXIT
+
+curl								\
+	-s							\
+	--write-out "${CURL_OUTPUT}" 				\
+	${VERBOSE}						\
+	-X ${CURL_METHOD} 					\
+	-H "Accept: application/json"		 		\
+	-H "Content-Type: application/json"		 	\
+	--data "${CURL_DATA}"                            	\
+	-o "${RESPONSE}"					\
+	${ENDPOINT}						\
+	> "${CURL_STATUS}"
+
+status=`cat ${CURL_STATUS}`
+if [ -t 1 ]; then
+  echo "${status}"
+  echo "response:"
+fi
+if jq empty "${RESPONSE}" > /dev/null  2>&1 ; then
+  cat "${RESPONSE}" | jq
+else
+  cat "${RESPONSE}"
+fi
+
+
