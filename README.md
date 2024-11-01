@@ -1,2 +1,3 @@
-# flame
-Test application for the Spark environment
+# Flame - Spark test application
+
+
