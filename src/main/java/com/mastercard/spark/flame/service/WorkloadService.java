@@ -26,9 +26,6 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class WorkloadService {
-
-private final GitProperties gitProperties;
-
 	private final ApplicationContext context;
 	Map<String, WorkloadRequest> workloads = new HashMap<>();
 	List<byte[]> memory = new ArrayList<>();
@@ -129,7 +126,7 @@ private final GitProperties gitProperties;
 		AvailabilityChangeEvent.publish(context, LivenessState.BROKEN);
 	}
 
-	private void cpuLoad(long load) throws NoSuchAlgorithmException {
+	private byte[] cpuLoad(long load) throws NoSuchAlgorithmException {
 		log.info("CPU load: {}", load);
 
 
@@ -140,6 +137,7 @@ private final GitProperties gitProperties;
 		for (long i = 0; i < load; i++) {
 			bytes = digest.digest(bytes);
 		}
+		return bytes;
 	}
 
 	private void memoryLoad(long load) {
