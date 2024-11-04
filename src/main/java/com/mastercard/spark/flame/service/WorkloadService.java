@@ -1,11 +1,11 @@
 package com.mastercard.spark.flame.service;
 
-import com.mastercard.spark.flame.model.MetaData;
-import com.mastercard.spark.flame.model.Workload;
-import io.micrometer.core.instrument.MeterRegistry;
+import com.mastercard.spark.flame.model.WorkloadRequest;
+import com.mastercard.spark.flame.model.WorkloadResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.availability.AvailabilityChangeEvent;
 import org.springframework.boot.availability.LivenessState;
+import org.springframework.boot.info.GitProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,37 +27,35 @@ import java.util.UUID;
 @Slf4j
 public class WorkloadService {
 
-	//private final GitProperties gitProperties;
+private final GitProperties gitProperties;
 
-	//private final BuildProperties buildProperties;
 	private final ApplicationContext context;
-	Map<String, Workload> workloads = new HashMap<>();
+	Map<String, WorkloadRequest> workloads = new HashMap<>();
 	List<byte[]> memory = new ArrayList<>();
 	Random rng = new Random();
 
 
-	public WorkloadService(ApplicationContext context, MeterRegistry meterRegistry) {
+	public WorkloadService(ApplicationContext context) {
 		this.context = context;
 	}
 
-	public List<Workload> getWorkloads() {
+	public List<WorkloadRequest> getWorkloads() {
 		log.info("getWorkloads - returning {}", workloads.size());
 		return new ArrayList<>(workloads.values());
 	}
 
-	public Optional<Workload> getWorkload(String id) {
+	public Optional<WorkloadRequest> getWorkload(String id) {
 		return workloads.values().stream()
 				.filter(workload -> workload.getId().equals(id))
 				.findFirst();
 	}
 
-	public Workload createWorkload(Workload workload) {
+	public WorkloadResult createWorkload(WorkloadRequest workload) {
 		log.info("createWorkload called");
 
 		long before = System.currentTimeMillis();
 
 		workload.setId(UUID.randomUUID().toString());
-		workload.setMetadata(buildMetaData());
 
 		workloads.put(workload.getId(), workload);
 
@@ -75,6 +73,34 @@ public class WorkloadService {
 				break;
 		}
 
+		if (workload.getNumThreads() == 1) {
+			run(workload);
+		} else {
+			List<Thread> threads = new ArrayList<>();
+			for (int i = 0; i < workload.getNumThreads(); i++) {
+				Thread thread = new Thread(() -> run(workload));
+				thread.start();
+				threads.add(thread);
+			}
+			threads.forEach(thread -> {
+				try {
+					thread.join();
+				} catch (InterruptedException e) {
+					throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+				}
+			});
+		}
+
+		return WorkloadResult.builder()
+				.id(workload.getId())
+				.timestamp(OffsetDateTime.now())
+				.replica(getReplicaId())
+				.elapsedTime(System.currentTimeMillis() - before)
+				.build();
+	}
+
+	private void run(WorkloadRequest workload) {
+		log.info("running workload {} on thread {}", workload.getId(), Thread.currentThread().getName());
 		try {
 			memoryLoad(workload.getMemoryLoad());
 			cpuLoad(workload.getCpuLoad());
@@ -82,22 +108,10 @@ public class WorkloadService {
 		} catch (InterruptedException | NoSuchAlgorithmException e) {
 			throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
 		}
-
-		workload.setElapsedTime(System.currentTimeMillis() - before);
-		return workload;
+		log.info("finished workload {} on thread {}", workload.getId(), Thread.currentThread().getName());
 	}
 
 
-	private MetaData buildMetaData() {
-
-		return MetaData.builder()
-				.timestamp(OffsetDateTime.now())
-				.replica(getReplicaId())
-				.version("?")
-				.commitId("?")
-				.build();
-
-	}
 
 	private String getReplicaId() {
 		return ManagementFactory.getRuntimeMXBean().getName();

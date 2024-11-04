@@ -1,12 +1,13 @@
 #!/bin/sh
 #
-# Usage: post-workload ACTION [DURATION] [CPU-LOAD] [MEMORY-LOAD] 
+# Usage: post-workload ACTION [DURATION] [CPU-LOAD] [MEMORY-LOAD] [NUM-THREADS]
 #
 
 action=$1
 duration=${2-0}
 cpuload=${3-0}
 memoryload=${4-0}
+numthreads=${5-1}
 
 DATA=`cat << __EOM__
 {
@@ -14,7 +15,8 @@ DATA=`cat << __EOM__
   "action": "${action}",
   "duration": ${duration},
   "cpuLoad": ${cpuload},
-  "memoryLoad": ${memoryload}
+  "memoryLoad": ${memoryload},
+  "numThreads": ${numthreads}
 }
 __EOM__
 `

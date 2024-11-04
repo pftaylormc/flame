@@ -5,7 +5,7 @@ spring:
   application:
     name: flame
 
-
+management:
   endpoint:
     info:
       enabled: true
@@ -18,7 +18,7 @@ spring:
       show-details: always
       probes:
         enabled: true
-      livenessState:
+      livelinessState:
         enabled: true
       readinessState:
         enabled: true
@@ -34,3 +34,14 @@ spring:
           - prometheus
           - loggers
           - httptrace
+
+info:
+  app:
+    name: ${project.name}
+    description: ${project.description}
+    version: ${project.version}
+  git:
+    branch: ${git.branch}
+    commit:
+      id: ${git.commit.id}
+      time: ${git.commit.time}

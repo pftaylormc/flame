@@ -1,6 +1,7 @@
 package com.mastercard.spark.flame.controller;
 
-import com.mastercard.spark.flame.model.Workload;
+import com.mastercard.spark.flame.model.WorkloadRequest;
+import com.mastercard.spark.flame.model.WorkloadResult;
 import com.mastercard.spark.flame.service.WorkloadService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class WorkloadController {
 			produces = { "application/json" }
 	)
 
-	public ResponseEntity<List<Workload>> getWorkloads() {
+	public ResponseEntity<List<WorkloadRequest>> getWorkloads() {
 		return ok(workloadService.getWorkloads());
 
 	}
@@ -42,7 +43,7 @@ public class WorkloadController {
 			produces = { "application/json" }
 	)
 
-	public ResponseEntity<Workload> getWorkload(@PathVariable("id") String id) {
+	public ResponseEntity<WorkloadRequest> getWorkload(@PathVariable("id") String id) {
 		return workloadService.getWorkload(id).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.notFound().build());
 	}
@@ -53,7 +54,7 @@ public class WorkloadController {
 			consumes = { "application/json" },
 			produces = { "application/json" }
 	)
-	public ResponseEntity<Workload> createWorkload(@RequestBody Workload workload) {
+	public ResponseEntity<WorkloadResult> createWorkload(@RequestBody WorkloadRequest workload) {
 		return ok(workloadService.createWorkload(workload));
 	}
 }

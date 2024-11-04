@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Usage: get-build-status
+#
+
+./src/test/curl/curl-request GET build/status
+

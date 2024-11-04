@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static org.springframework.http.ResponseEntity.ok;
-
 
 @Controller
 @Slf4j
@@ -21,7 +19,7 @@ public class StatusController {
 	)
 
 	public ResponseEntity<String> status(@PathVariable("code") Integer code) {
-		log.info("status - {}\n", code);
-		return ResponseEntity.status(code).body("Status code " + code);
+		log.info("status - {}", code);
+		return ResponseEntity.status(code).body("Status code " + code + "\n");
 	}
 }

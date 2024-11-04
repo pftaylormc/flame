@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class Workload {
+public class WorkloadRequest {
 
 	private String id;
 
@@ -18,9 +18,7 @@ public class Workload {
 
 	private long cpuLoad = 0L;
 
+	private long numThreads = 1;
+
 	private WorkloadAction action = WorkloadAction.NORMAL;
-
-	private long elapsedTime;
-	private MetaData metadata;
-
 }
