@@ -1,5 +1,15 @@
 # Flame - Spark test application
 
+## Building using build packs
+
+```
+pack build com.mastercard.spark.flame:latest --tag com.mastercard.spark.flame:1.0.0  --builder gcr.io/buildpacks/builder:google-22
+```
+
+Load into kind cluster called 'spark'
+```
+kind load -n spark docker-image com.mastercard.spark.flame:1.0.0 
+```
 
 ## HTTP Status Codes
 
