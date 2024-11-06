@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.mastercard.spark</groupId>
 	<artifactId>flame</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<name>flame</name>
 	<description>Spark Spring Boot Java Application</description>
 	<url/>

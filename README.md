@@ -5,7 +5,7 @@
 
 GET operation returning any HTTP status code. Eg 201
 ```
-$ ./src/test/curl/get-status 201                 
+% ./src/test/curl/get-status 201                 
 GET http://localhost:8080/status/201
 status: 201
 time: 0.193209
@@ -16,12 +16,24 @@ Status code 201
 or 404
 
 ```
-$ ./src/test/curl/get-status 404
+% ./src/test/curl/get-status 404
 GET http://localhost:8080/status/404
 status: 404
 time: 0.012496
 response:
 Status code 404
+```
+
+## Echo
+
+Echo a message
+```
+% ./src/test/curl/get-echo Hello
+GET http://localhost:8080/echo?msg=Hello
+status: 200
+time: 0.224101
+response:
+Hello
 ```
 
 ## Workloads
@@ -31,7 +43,7 @@ Create a workload using memory, CPU and time resources.
 For example create a workload that waits 500ms, uses 2,000,000 bytes of memory
 with a CPU load of 1,000,000 (number of SHA256 hash operations) using 4 threads:
 ```
-./src/test/curl/post-workload NORMAL 500 1000000 2000000 4 
+% ./src/test/curl/post-workload NORMAL 500 1000000 2000000 4 
 POST http://localhost:8080/workloads
 request:
 {
@@ -57,7 +69,7 @@ response:
 ## Build Status
 
 ```
-$ ./src/test/curl/get-build-status
+% ./src/test/curl/get-build-status
 GET http://localhost:8080/build/status
 status: 200
 time: 0.015810
@@ -71,7 +83,7 @@ response:
 ## Actuator Endpoints
 
 ```
-$ ./src/test/curl/curl-request GET actuator/health
+% ./src/test/curl/curl-request GET actuator/health
 GET http://localhost:8080/actuator/health
 status: 200
 time: 0.034439
@@ -80,3 +92,5 @@ response:
   "status": "UP"
 }
 ```
+
+
