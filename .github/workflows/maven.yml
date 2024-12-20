@@ -32,3 +32,8 @@ jobs:
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag spark-flame:1.1.0
+    - name: sleep
+      run: |
+	echo "Sleeping"
+	sleep 500
+	echo Done
