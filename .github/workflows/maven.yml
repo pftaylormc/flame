@@ -35,5 +35,5 @@ jobs:
     - name: sleep
       run: |
           echo "Sleeping"
-          sleep 300
+          sleep 600
           echo Done
